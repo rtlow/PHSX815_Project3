@@ -185,23 +185,18 @@ Modern astronomy relies on Charged Coupled Devices (CCDs) and other such
  as a Poisson distribution.
  As with all electronic measurements, we must also be aware of sources of
  noise.
- Since the noise appears in our counts, we can also expect it to be distributed
- as a Poisson distribution.
- However, the rate at which noise occurs, 
-\begin_inset Formula $\lambda_{noise}$
-\end_inset
-
-, depends nontrivially on other confounding factors.
+ Since CCD noise comes from electron counts, we can also expect it to be
+ distributed as a Poisson distribution.
  The determination of 
 \begin_inset Formula $\lambda_{noise}$
 \end_inset
 
  is an important problem that all astronomers face.
- Yet, it is often told that a good rule of thumb for determining 
+ It is often told that a good rule of thumb for determining 
 \begin_inset Formula $\lambda_{noise}$
 \end_inset
 
- is taking the per-pixel median of the calibration images.
+ is to take the per-pixel median of the calibration images.
  We will investigate whether this rule of thumb holds in practice.
 \end_layout
 
@@ -921,10 +916,13 @@ By simulating the noise detected by a CCD, we were able to estimate the
 
  reasonably well.
  This means the astronomer's rule of thumb of using the median of the data
- to estimate the error is a reliable rule of thumb.
- The analysis implies that using the median as an estimate of error may
- not significantly affect the results of astronomical data analysis, provided
- that the detector noise really goes as a Poisson distribution.
+ to estimate the error is a reliable rule of thumb and may not significantly
+ affect the results of astronomical data analysis if the detected noise
+ is Poisson distributed.
+ For observations that are signal-dominated, this rule of thumb can be safely
+ applied.
+ If the data is noise-dominated, however, this rule of thumb may not hold
+ and more care must be taken to characterize the noise distribution.
 \end_layout
 
 \end_body
