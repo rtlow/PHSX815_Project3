@@ -202,7 +202,7 @@ Modern astronomy relies on Charged Coupled Devices (CCDs) and other such
 \end_inset
 
  is taking the per-pixel median of the calibration images.
- We will demonstrate how well this rule of thumb holds.
+ We will investigate whether this rule of thumb holds in practice.
 \end_layout
 
 \begin_layout Section
@@ -273,7 +273,17 @@ Using the generated data, we must be able to infer
 \end_inset
 
 .
- Each sample has probability given by Equation 
+ The relationship between the probability distribution of the data given
+ 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is related to probability distribution of 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ given the data by Bayes' theorem.
+ The posterior probability distribution is proportional to Equation 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "eq:Pois"
@@ -286,12 +296,12 @@ noprefix "false"
 .
 \begin_inset Formula 
 \begin{equation}
-P\left(\lambda|x\right)=\frac{\lambda^{x}e^{-\lambda}}{x!}\label{eq:Pois}
+P\left(\lambda|x\right)\propto\frac{\lambda^{x}e^{-\lambda}}{x!}\label{eq:Pois}
 \end{equation}
 
 \end_inset
 
-Here, however, we do not know 
+Here, we do not know 
 \begin_inset Formula $\lambda$
 \end_inset
 
@@ -334,6 +344,33 @@ The value of
 
  that maximizes the LL will be our best estimate of 
 \begin_inset Formula $\lambda$
+\end_inset
+
+.
+ When viewed as a function of 
+\begin_inset Formula $\lambda$
+\end_inset
+
+, terms in the LL that don't explicitly depend on 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ are just normalizations and therefore don't need to be considered in the
+ maximization process.
+ The LL can therefore be written as
+\begin_inset Formula 
+\[
+\text{LL}\left(\lambda\right)=\sum_{i}x\log\lambda-\lambda
+\]
+
+\end_inset
+
+We numerically maximize this function to find 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+, the best estimate of 
+\begin_inset Formula $\lambda_{noise}$
 \end_inset
 
 .
@@ -510,6 +547,384 @@ texttt{scipy}
 \end_inset
 
  optimization package to perform numerical minimization and obtain uncertainties.
+ 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{scipy.optimize.minimize}
+\end_layout
+
+\end_inset
+
+ gives the optimal value of 
+\begin_inset Formula $\lambda_{noise}$
+\end_inset
+
+, and the inverse Hessian matrix of the fit.
+ Since this is a one-parameter fit, the inverse Hessian matrix will only
+ hold one value and will be the estimate of the variance.
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Standard
+A typical observing run can afford about 30 calibration frames for characterizin
+g noise.
+ Simulating 30 measurements per experiment for 100 experiments, we estimate
+ the noise rate parameter.
+ To see how well the median characterizes the error, we can plot the value
+ of 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+ against the median for each experiment.
+ If the median is a good estimate of 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+, then the resulting scatter should align along the line 
+\begin_inset Formula $y=x$
+\end_inset
+
+.
+ Equivalently, plotting the difference between 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+ and the mean should result in a scatter about the line 
+\begin_inset Formula $y=0$
+\end_inset
+
+.
+ With 
+\begin_inset Formula $T=300\,K$
+\end_inset
+
+, we present plots of both cases in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Left:-Plotting-"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename 300K_scatter_plot.png
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename 300K_residual_plot.png
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Top: Plotting 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+ vs the median for 
+\begin_inset Formula $T=300\,K$
+\end_inset
+
+.
+ Bottom: Plotting the difference between 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+ and the median against 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Left:-Plotting-"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+ From either of those figures, we see that the median generally underestimates
+ 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+.
+ The mean difference is 
+\begin_inset Formula $0.405$
+\end_inset
+
+ counts per second.
+ Compared to the mean error on 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+ of 
+\begin_inset Formula $0.729$
+\end_inset
+
+ counts per second, we see that the median also gives a reasonable estimate
+ of the noise.
+ We repeat the analysis with 
+\begin_inset Formula $T=77\,K$
+\end_inset
+
+ to simulate the detector being cooled to liquid nitrogen temperature.
+ The result is presented in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Left:-Plotting--1"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename 77K_scatter_plot.png
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Box Frameless
+position "t"
+hor_pos "c"
+has_inner_box 1
+inner_pos "t"
+use_parbox 0
+use_makebox 0
+width "100col%"
+special "none"
+height "1in"
+height_special "totalheight"
+thickness "0.4pt"
+separation "3pt"
+shadowsize "4pt"
+framecolor "black"
+backgroundcolor "none"
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename 77K_residual_plot.png
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Left: Plotting 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+ vs the median for 
+\begin_inset Formula $T=77\,K$
+\end_inset
+
+.
+ Right: Plotting the difference between 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+ and the median against 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Left:-Plotting--1"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ Again, the median underestimates 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+, this time with a mean difference of 
+\begin_inset Formula $0.411$
+\end_inset
+
+ counts per second.
+ Compared with the mean error on 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+ of 
+\begin_inset Formula $0.430$
+\end_inset
+
+ counts per second, the median still is a good estimate of the error.
+\end_layout
+
+\begin_layout Section
+Conclusions
+\end_layout
+
+\begin_layout Standard
+By simulating the noise detected by a CCD, we were able to estimate the
+ Poisson rate parameter of the noise distribution by maximizing the likelihood.
+ With this, we were able to show that the median of the data estimated 
+\begin_inset Formula $\hat{\lambda_{noise}}$
+\end_inset
+
+ reasonably well.
+ This means the astronomer's rule of thumb of using the median of the data
+ to estimate the error is a reliable rule of thumb.
+ The analysis implies that using the median as an estimate of error may
+ not significantly affect the results of astronomical data analysis, provided
+ that the detector noise really is Poisson distributed.
 \end_layout
 
 \end_body
